@@ -1,0 +1,57 @@
+{
+  "name": "ds_iot_analytics_platform",
+  "config": {
+    "project_id": "your-gcp-project-id",
+    "dataset_id": "iot_analytics_ds",
+    "table_id": "enriched_telemetry"
+  },
+  "fields": [
+    {
+      "name": "timestamp",
+      "label": "Event Time",
+      "dataType": "DATETIME",
+      "semantics": {
+        "conceptType": "DIMENSION",
+        "semanticType": "YEAR_MONTH_DAY_SECOND"
+      }
+    },
+    {
+      "name": "device_id",
+      "label": "Device Identifier",
+      "dataType": "STRING",
+      "semantics": {
+        "conceptType": "DIMENSION",
+        "semanticType": "TEXT"
+      }
+    },
+    {
+      "name": "temperature",
+      "label": "Temperature (°C)",
+      "dataType": "NUMBER",
+      "semantics": {
+        "conceptType": "METRIC",
+        "semanticType": "NUMBER",
+        "isReaggregatable": true
+      }
+    },
+    {
+      "name": "alert_level",
+      "label": "System Status",
+      "dataType": "STRING",
+      "semantics": {
+        "conceptType": "DIMENSION",
+        "semanticType": "TEXT"
+      }
+    },
+    {
+      "name": "latency_sec",
+      "label": "Ingestion Latency",
+      "formula": "DATETIME_DIFF(processed_at, timestamp, SECOND)",
+      "dataType": "NUMBER",
+      "semantics": {
+        "conceptType": "METRIC",
+        "semanticType": "NUMBER"
+      }
+    }
+  ]
+}

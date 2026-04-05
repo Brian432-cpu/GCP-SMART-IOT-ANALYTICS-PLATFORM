@@ -1,0 +1,31 @@
+# Looker Studio Database Specification: GCP-SMART-IOT-ANALYTICS-PLATFORM
+
+This document defines the schema and connection settings for the Looker Studio 
+Dashboard, sourcing data from the BigQuery analytics layer.
+
+## 1. Data Source Configuration
+* **Connector:** Google BigQuery (Native)
+* **Project ID:** `${var.project_id}`
+* **Dataset ID:** `iot_analytics_ds`
+* **Table ID:** `enriched_telemetry`
+* **Data Refresh Rate:** 15 Minutes (Standard) / 1 Minute (Premium)
+
+## 2. Table Schema & Field Mapping
+
+| Field Name     | Data Type     | Default Aggregation | Role              |
+| :------------- | :------------ | :------------------ | :---------------- |
+| `timestamp`    | Date & Time   | None                | Primary Dimension |
+| `device_id`    | Text          | None                | Break Dimension   |
+| `temperature`  | Number        | Average             | Metric            |
+| `humidity`     | Number        | Average             | Metric            |
+| `alert_level`  | Text          | None                | Filter Dimension  |
+| `region`       | Geo (Alpha-2) | None                | Map Dimension     |
+| `processed_at` | Date & Time   | None                | Metadata          |
+
+## 3. Calculated Fields (Virtual Schema)
+
+To add "Smart" logic at the reporting layer, create these fields in Looker Studio:
+
+### A. Ingestion Latency (ms)
+```sql
+DATETIME_DIFF(processed_at, timestamp, SECOND)

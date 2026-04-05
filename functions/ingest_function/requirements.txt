@@ -1,0 +1,8 @@
+# Google Cloud Client Libraries
+google-cloud-pubsub>=2.18.0
+
+# HTTP Framework for GCP Functions
+functions-framework>=3.0.0
+
+# Flask is required as functions-framework is built on top of it
+Flask>=2.3.0

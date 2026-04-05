@@ -1,0 +1,45 @@
+# cloudbuild.yaml
+steps:
+  # 1. Initialize Terraform
+  - name: 'hashicorp/terraform:1.5.0'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform init
+
+  # 2. Check Formatting (Best Practice for CI/CD)
+  - name: 'hashicorp/terraform:1.5.0'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform fmt -check
+
+  # 3. Terraform Plan
+  # This creates a plan file to ensure the 'apply' step uses the exact same logic
+  - name: 'hashicorp/terraform:1.5.0'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform plan -out=tfplan -var="project_id=$PROJECT_ID"
+
+  # 4. Terraform Apply
+  # Only runs if the previous steps succeed. 
+  # Using -auto-approve is required for automated pipelines.
+  - name: 'hashicorp/terraform:1.5.0'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform apply -auto-approve tfplan
+
+# Substitutions allow you to pass variables dynamically
+substitutions:
+  _REGION: us-central1
+  _ENVIRONMENT: dev
+
+# Store logs in a GCS bucket (Recommended)
+options:
+  logging: CLOUD_LOGGING_ONLY
